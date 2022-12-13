@@ -94,6 +94,15 @@ class SdgController extends BaseController
 					'compare' => '=',
 				];
 			}
+
+			if ( isset( $parametersFromRequest['doelgroep'] ) ) {
+				$audience = esc_attr( $parametersFromRequest['doelgroep'] );
+				$query['meta_query'][] = [
+					'key' => '_owc_enrichment_audience',
+					'value' => $audience,
+					'compare' => '=',
+				];
+			}
 		}
 
 		return $query;
@@ -145,15 +154,20 @@ class SdgController extends BaseController
 			'type'        => 'string',
 			'format'      => 'date-time',
 		];
-		$args['upl'] = [
-			'description' => esc_html__('Get item by UPL', 'pdc-base'),
-			'required'    => false,
-			'type'        => 'string',
-		];
 		$args['lang'] = [
 			'description' => esc_html__( 'Get items for a specific language.', 'pdc-base'),
 			'required'    => false,
 			'type'        => 'string'
+		];
+		$args['upnUri'] = [
+			'description' => esc_html__('Get item by UPL.', 'pdc-base'),
+			'required'    => false,
+			'type'        => 'string',
+		];
+		$args['doelgroep'] = [
+			'description' => esc_html__('Get items by audience.', 'pdc-base'),
+			'required'    => false,
+			'type'        => 'string',
 		];
 
 		return $args;
