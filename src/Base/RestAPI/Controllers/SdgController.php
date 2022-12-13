@@ -9,7 +9,7 @@ namespace OWC\PDC\Base\RestAPI\Controllers;
 use OWC\PDC\Base\Repositories\Item;
 use OWC\PDC\Base\Support\Traits\CheckPluginActive;
 use OWC\PDC\Base\UPL\Enrichment\Services\EnrichmentProductResolver;
-use WP_Error;
+use WP_Query;
 use WP_REST_Request;
 
 /**
@@ -33,16 +33,38 @@ class SdgController extends BaseController
 			->query(apply_filters('owc/pdc/rest-api/sdg/query', $this->getPaginatorParams($request)))
 			->query($parameters)
 			->query(self::metaQuery($parameters));
-
 		$items->all();
 
-		$posts = $items->getQuery()->posts;
+		$query = $items->getQuery();
+		$posts = $query->posts;
+
 		$enriched_posts = [];
 		foreach( $posts as $post ) {
 			$enriched_posts[] = (new EnrichmentProductResolver($post))->resolve()->jsonSerialize();
 		}
 
-		return $enriched_posts;
+		return $this->pagination( $query, $enriched_posts );
+	}
+
+	/**
+	 * Add pagination and counter to the response.
+	 *
+	 * @param WP_Query  $query
+	 * @param array     $results
+	 *
+	 * @return array
+	 */
+	public function pagination( $query, $results = [] ) : array {
+
+		$page = $query->get('paged');
+        $page = 0 == $page ? 1 : $page;
+
+		return [
+			'count'    => (int) $query->found_posts,
+			'next'     => ( $query->max_num_pages > $page ? add_query_arg( 'page', ( $page + 1 ), get_rest_url( null, '/owc/pdc/v1/sdg/' ) ) : null ), 
+			'previous' => ( $page > 1 ? add_query_arg( 'page', ( $page - 1 ), get_rest_url( null, '/owc/pdc/v1/sdg/' ) ) : null ),
+			'results' => $results,
+		];
 	}
 
 	public static function metaQuery(array $parametersFromRequest = []): array
