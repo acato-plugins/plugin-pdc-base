@@ -31,8 +31,8 @@ class SdgController extends BaseController
 		$parameters = $request->get_params();
 		$items      = (new Item())
 			->query(apply_filters('owc/pdc/rest-api/sdg/query', $this->getPaginatorParams($request)))
-			->query($parameters);
-			//->query(self::metaQuery($parameters));
+			->query($parameters)
+			->query(self::metaQuery($parameters));
 		$items->all();
 
 		$query = $items->getQuery();
