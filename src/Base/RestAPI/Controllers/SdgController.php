@@ -108,8 +108,8 @@ class SdgController extends BaseController
 				);
 			}
 
-			if ( isset( $parametersFromRequest['upl'] ) ) {
-				$upl = esc_attr( $parametersFromRequest['upl'] );
+			if ( isset( $parametersFromRequest['upnUri'] ) ) {
+				$upl = esc_attr( $parametersFromRequest['upnUri'] );
 				$query['meta_query'][] = [
 					'key' => '_owc_pdc_upl_resource',
 					'value' => $upl,
