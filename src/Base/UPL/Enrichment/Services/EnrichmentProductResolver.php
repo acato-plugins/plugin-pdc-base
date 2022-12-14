@@ -112,7 +112,7 @@ class EnrichmentProductResolver
             'wtdBijGeenReactie',
         ];
 
-        $converter = new HtmlConverter();
+        $converter = new HtmlConverter(['strip_tags' => true]);
 
         return array_map(function ($translation) use ($keysToConvert, $converter) {
             foreach ($keysToConvert as $key) {
