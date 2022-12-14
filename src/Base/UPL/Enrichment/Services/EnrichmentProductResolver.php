@@ -119,13 +119,24 @@ class EnrichmentProductResolver
                 if (empty($translation[$key])) {
                     continue;
                 }
-                $translation[$key] = $converter->convert(do_shortcode($translation[$key]));
+                $translation[$key] = $converter->convert($this->formatter($translation[$key]));
             }
-
             return $translation;
         }, $translations);
     }
 
+    /**
+     * Function to format text strings before converting to Markdown.
+     */
+    protected function formatter( string $string ) : string
+    {
+        // Execute shortcodes, for example for the Leges.
+        $shortcodes = do_shortcode( $string );
+        // Replace linebreaks with <br/> tag before Markdown parsing.
+        // Don't use nl2br() because it will leave a leading space.
+        $linebreaks = str_replace( PHP_EOL, '<br/>', $shortcodes );
+        return $linebreaks;
+    }
 
     /**
      * Metabox key_value field type does not accept associative keys inside a multidimensional array.
