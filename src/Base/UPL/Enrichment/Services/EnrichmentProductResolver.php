@@ -119,7 +119,7 @@ class EnrichmentProductResolver
                 if (empty($translation[$key])) {
                     continue;
                 }
-                $translation[$key] = $converter->convert($translation[$key]);
+                $translation[$key] = $converter->convert(do_shortcode($translation[$key]));
             }
 
             return $translation;
